@@ -1,58 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar System 3D Web</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realistic Black Hole</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-        a-scene {
-            width: 100vw;
-            height: 100vh;
+        body { margin: 0; overflow: hidden; }
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-family: Arial, sans-serif;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 999;
         }
     </style>
 </head>
 <body>
+    <div class="instructions">
+        Use WASD to move, mouse to look around
+    </div>
     <a-scene>
-        <!-- Sky background -->
-        <a-sky color="#000011"></a-sky>
+        <a-sky color="#000000"></a-sky>
 
+        <!-- Black Hole System -->
+        <a-entity position="0 0 -20">
+            <!-- Event Horizon (pure black sphere) -->
+            <a-sphere position="0 0 0" radius="2"
+                material="shader: standard; color: #000000; emissive: #000000; metalness: 1; roughness: 0">
+            </a-sphere>
 
-        <!-- Earth -->
-        <a-sphere 
-        position="2 3 -15" 
-        radius="0.5" 
-        scale="10 10 10"
-        roughness="1" 
-        src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Earthmap1000x500compac.jpg" <!-- Earth texture -->
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
-    </a-sphere>
-    
+            <!-- Multi-layered Accretion Disk for more realistic effect -->
+            <a-entity animation="property: rotation; to: 0 360 0; loop: true; dur: 6000" scale="0.7 0.7 0.7">
+                <!-- Inner hot regions -->
+                <a-torus position="0 0 0" 
+                    radius="2.2" radius-tubular="0.3"
+                    segments-tubular="100"
+                    rotation="80 0 0"
+                    material="shader: standard; color: #FF2200; emissive: #FF2200; emissiveIntensity: 1; metalness: 0.8; roughness: 0.2"
+                    animation="property: rotation; to: 80 360 0; loop: true; dur: 15000">
+                </a-torus>
+                
+                <a-torus position="0 0 0" 
+                    radius="2.8" radius-tubular="0.4"
+                    segments-tubular="100"
+                    rotation="75 0 0"
+                    material="shader: standard; color: #FF4400; emissive: #FF4400; emissiveIntensity: 0.9; metalness: 0.7; roughness: 0.3"
+                    animation="property: rotation; to: 75 360 0; loop: true; dur: 18000">
+                </a-torus>
 
+                <a-torus position="0 0 0" 
+                    radius="3.4" radius-tubular="0.5"
+                    segments-tubular="100"
+                    rotation="70 0 0"
+                    material="shader: standard; color: #FF6600; emissive: #FF6600; emissiveIntensity: 0.8; metalness: 0.6; roughness: 0.4"
+                    animation="property: rotation; to: 70 360 0; loop: true; dur: 21000">
+                </a-torus>
 
+                <!-- Outer cooler regions -->
+                <a-torus position="0 0 0" 
+                    radius="4" radius-tubular="0.6"
+                    segments-tubular="100"
+                    rotation="65 0 0"
+                    material="shader: standard; color: #FF8800; emissive: #FF8800; emissiveIntensity: 0.7; metalness: 0.5; roughness: 0.5"
+                    animation="property: rotation; to: 65 360 0; loop: true; dur: 24000">
+                </a-torus>
 
-        <!-- Stars -->
-        <a-entity id="stars"></a-entity>
+                <a-torus position="0 0 0" 
+                    radius="4.6" radius-tubular="0.7"
+                    segments-tubular="100"
+                    rotation="60 0 0"
+                    material="shader: standard; color: #FFA500; emissive: #FFA500; emissiveIntensity: 0.6; metalness: 0.4; roughness: 0.6"
+                    animation="property: rotation; to: 60 360 0; loop: true; dur: 27000">
+                </a-torus>
+            </a-entity>
+
+            <!-- Gravitational Lensing Effect -->
+            <a-entity>
+                <!-- Multiple layers of transparent spheres for lensing -->
+                <a-sphere position="0 0 0" radius="2.1"
+                    material="shader: standard; opacity: 0.3; color: #000000; metalness: 1; roughness: 0">
+                </a-sphere>
+                <a-sphere position="0 0 0" radius="2.3"
+                    material="shader: standard; opacity: 0.25; color: #000000; metalness: 1; roughness: 0">
+                </a-sphere>
+                <a-sphere position="0 0 0" radius="2.5"
+                    material="shader: standard; opacity: 0.2; color: #000000; metalness: 1; roughness: 0">
+                </a-sphere>
+                <a-sphere position="0 0 0" radius="2.7"
+                    material="shader: standard; opacity: 0.15; color: #000000; metalness: 1; roughness: 0">
+                </a-sphere>
+            </a-entity>
+
+            <!-- Dynamic Lighting -->
+            <!-- <a-light type="point" color="#FF4400" intensity="1.5" position="0 3 0"
+                animation="property: intensity; dir: alternate; dur: 3000; easing: easeInOutSine; loop: true; to: 2">
+            </a-light>
+            <a-light type="point" color="#FF8800" intensity="1" position="0 -3 0"
+                animation="property: intensity; dir: alternate; dur: 3500; easing: easeInOutSine; loop: true; to: 1.5">
+            </a-light> -->
+        </a-entity>
+
+              <!-- Stars -->
+      <a-entity id="stars"></a-entity>
 
         <!-- Camera -->
-        <a-camera position="0 1.6 0"></a-camera>
+        <a-entity position="0 0 10">
+            <a-camera look-controls wasd-controls></a-camera>
+        </a-entity>
     </a-scene>
 
-    <script>
-        const starsEntity = document.getElementById('stars');
-        const starCount = 1000;
 
+
+    <script>
+        const starsEntity = document.getElementById("stars");
+        const starCount = 1000;
+  
         for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('a-sphere');
-            star.setAttribute('radius', '0.05');
-            star.setAttribute('color', 'white');
-            star.setAttribute('position', `${(Math.random() - 0.5) * 100} ${(Math.random() - 0.5) * 100} ${(Math.random() - 0.5) * 100}`);
-            starsEntity.appendChild(star);
+          const star = document.createElement("a-sphere");
+          star.setAttribute("radius", "0.05");
+          star.setAttribute("color", "white");
+          star.setAttribute(
+            "position",
+            `${(Math.random() - 0.5) * 100} ${(Math.random() - 0.5) * 100} ${
+              (Math.random() - 0.5) * 100
+            }`
+          );
+          starsEntity.appendChild(star);
         }
-    </script>
+      </script>
 </body>
 </html>
