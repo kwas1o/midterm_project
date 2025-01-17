@@ -37,12 +37,20 @@
         animation="property: rotation; to: 0 360 0; loop: true; dur: 25000"
         class="clickable clickable-object sun"
       >
-        <a-light
+        <!-- <a-light
           type="point"
           color="#ff5500"
           intensity="1.5"
           distance="100"
-        ></a-light>
+        ></a-light> -->
+
+                <!-- Dynamic Lighting -->
+        <a-light type="point" color="#FF4400" intensity="1.5" position="0 3 0"
+                animation="property: intensity; dir: alternate; dur: 3000; easing: easeInOutSine; loop: true; to: 2">
+            </a-light>
+            <a-light type="point" color="#FF8800" intensity="1" position="0 -3 0"
+                animation="property: intensity; dir: alternate; dur: 3500; easing: easeInOutSine; loop: true; to: 1.5">
+            </a-light>
       </a-sphere>
 
       <!-- Saturn System - Enhanced visibility -->
@@ -238,7 +246,7 @@
           <a-sphere
             id="earth"
             radius="1.5"
-            material="src: url(model/earth.png); 
+            material="src: url(model/earth.jpg); 
                   normalMap: https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Earthbump1k.jpg/1024px-Earthbump1k.jpg;
                   roughness: 0.5; 
                   metalness: 0.1"
@@ -268,27 +276,7 @@
               animation="property: material.emissiveIntensity; to: 0.3; dur: 2000; dir: alternate; loop: true"
             ></a-sphere>
 
-            <!-- Dynamic Cloud Layer -->
-            <a-sphere
-              radius="1.51"
-              material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Earthcloud1k.png/1024px-Earthcloud1k.png; 
-                    transparent: true; 
-                    opacity: 0.8;
-                    roughness: 1;
-                    metalness: 0"
-              animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
-            ></a-sphere>
 
-            <!-- Specular Highlights -->
-            <a-sphere
-              radius="1.53"
-              material="shader: standard; 
-                    opacity: 0.1; 
-                    transparent: true; 
-                    color: #ffffff;
-                    metalness: 1;
-                    roughness: 0.3"
-            ></a-sphere>
           </a-sphere>
 
           <!-- Moon System -->
@@ -298,7 +286,7 @@
           >
             <a-sphere
               radius="0.4"
-              material="src: url(model/moon.jpg); 
+              material="src: url(model/moon.png); 
                     normalMap: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Moon_normal_map_from_clementine_data.png/1024px-Moon_normal_map_from_clementine_data.png;
                     roughness: 0.8;
                     metalness: 0.1"
@@ -327,7 +315,53 @@
         </a-light>
       </a-entity>
 
-      <!-- Camera with improved controls -->
+    <!-- Mercury System -->
+    <a-entity position="-5 1 -30">
+        <!-- Mercury Planet -->
+        <a-sphere
+            id="mercury"
+            radius="0.5"
+            material="src: url(model/mercury.jpg);
+            normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
+            roughness: 0.8; metalness: 0.2"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
+            class="clickable clickable-object mercury"
+            event-set__enter="scale: 1.1 1.1 1.1"
+            event-set__leave="scale: 1 1 1"
+        >
+        </a-sphere>
+
+        <!-- Enhanced Lighting for Mercury -->
+        <a-light
+            type="point"
+            color="#ffffff"
+            intensity="0.5"
+            position="2 2 2"
+        ></a-light>
+    </a-entity>
+
+
+    <!-- Jupiter System -->
+    <a-entity position="-10 3 -30">
+        <!-- Jupiter Planet -->
+        <a-sphere
+            id="jupiter"
+            radius="2.5"
+            material="src: url(model/jupiter.png); 
+                                normalMap: https://upload.wikimedia.org/wikipedia/commons/thumb/
+      
+                                roughness: 0.1; metalness: 0.1"
+                                animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
+                                class="clickable clickable-object juputer"
+                                event-set__enter="scale: 1.1 1.1 1.1"
+                                event-set__leave="scale: 1 1 1"
+                            >
+                            </a-sphere>
+                            </a-entity>
+      
+                               
+                            
+    <!-- Camera with improved controls -->
       <a-entity position="0 2 5">
         <a-camera look-controls wasd-controls="acceleration: 100">
           <a-cursor
