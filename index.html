@@ -5,105 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Solar System 3D Web</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
-      .planet-info {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        color: white;
-        background: rgba(0, 0, 0, 0.95);
-        padding: 25px;
-        border-radius: 15px;
-        font-family: "Kanit", sans-serif;
-        display: none;
-        max-width: 350px;
-        z-index: 9999;
-        border: 3px solid #ffd700;
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-        animation: glowBorder 2s infinite alternate;
-      }
-      @keyframes glowBorder {
-        from {
-          box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-        }
-        to {
-          box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-        }
-      }
-      .planet-info h2 {
-        margin: 0 0 15px 0;
-        color: #ffd700;
-        font-size: 1.8em;
-        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-      }
-      .planet-info p {
-        margin: 10px 0;
-        line-height: 1.8;
-        font-size: 1.1em;
-      }
-      .interaction-hint {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 12px 25px;
-        border-radius: 25px;
-        font-family: "Kanit", sans-serif;
-        z-index: 9999;
-        border: 2px solid #ffd700;
-        animation: float 3s ease-in-out infinite;
-      }
-      @keyframes float {
-        0% {
-          transform: translateX(-50%) translateY(0px);
-        }
-        50% {
-          transform: translateX(-50%) translateY(-10px);
-        }
-        100% {
-          transform: translateX(-50%) translateY(0px);
-        }
-      }
-      .click-indicator {
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: 3px solid #ffd700;
-        animation: pulse 2s infinite;
-        pointer-events: none;
-        display: none;
-      }
-      @keyframes pulse {
-        0% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        100% {
-          transform: scale(2);
-          opacity: 0;
-        }
-      }
-    </style>
     <link
       href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
-    <div id="planetInfo" class="planet-info"></div>
+    <div id="customCursor" class="custom-cursor"></div>
+    <div id="planetInfo" class="planet-info">
+        <button class="close-button">✕</button>
+        <div id="infoContent"></div>
+    </div>
     <div class="interaction-hint">
       🪐 คลิกที่ดาวเสาร์เพื่อดูข้อมูล | WASD = เคลื่อนที่ | เมาส์ = มองรอบทิศทาง
     </div>
-    <div id="clickIndicator" class="click-indicator"></div>
+    <!-- <div id="clickIndicator" class="click-indicator"></div> -->
 
-    <a-scene>
+    <a-scene cursor="rayOrigin: mouse">
       <a-sky color="#000011"></a-sky>
 
       <!-- Ambient light -->
@@ -114,8 +33,9 @@
         position="0 0 -20"
         radius="2"
         material="shader: standard; emissive: #ff5500; emissiveIntensity: 1"
-        src="https://upload.wikimedia.org/wikipedia/commons/b/b4/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg"
+        src= url(model/sun.jpg) 
         animation="property: rotation; to: 0 360 0; loop: true; dur: 25000"
+        class="clickable clickable-object sun"
       >
         <a-light
           type="point"
@@ -143,7 +63,7 @@
           radius="2"
           material="src: https://upload.wikimedia.org/wikipedia/commons/e/e4/Saturn_%28planet%29_surface.jpg; roughness: 0.7; metalness: 0.3"
           animation="property: rotation; to: 0 360 0; loop: true; dur: 15000"
-          class="clickable saturn"
+          class="clickable clickable-object saturn"
           event-set__enter="scale: 1.1 1.1 1.1"
           event-set__leave="scale: 1 1 1"
         >
@@ -196,10 +116,10 @@
       </a-entity>
 
       <!-- Black Hole System -->
-      <a-entity position="0 0 -100">
+      <a-entity position="0 0 -100" class="clickable clickable-object blackhole">
         <!-- Event Horizon (pure black sphere) -->
         <a-sphere
-          class="clickable blackhole"
+          class="clickable clickable-object blackhole"
           position="0 0 0"
           radius="2"
           material="shader: standard; color: #000000; emissive: #000000; metalness: 1; roughness: 0"
@@ -308,6 +228,105 @@
             </a-light> -->
       </a-entity>
 
+      <!-- Earth System -->
+      <a-entity position="-10 0 -40" rotation="0 0 23.5">
+        <!-- Earth Group for axial tilt -->
+        <a-entity
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 24000"
+        >
+          <!-- Main Earth Sphere -->
+          <a-sphere
+            id="earth"
+            radius="1.5"
+            material="src: url(model/earth.png); 
+                  normalMap: https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Earthbump1k.jpg/1024px-Earthbump1k.jpg;
+                  roughness: 0.5; 
+                  metalness: 0.1"
+            class="clickable clickable-object earth"
+            event-set__enter="scale: 1.1 1.1 1.1"
+            event-set__leave="scale: 1 1 1"
+          >
+            <!-- Detailed Atmosphere Layers -->
+            <a-sphere
+              radius="1.52"
+              material="shader: standard; 
+                    opacity: 0.3; 
+                    transparent: true; 
+                    color: #b4d7ff"
+              animation="property: material.opacity; to: 0.4; dur: 2000; dir: alternate; loop: true"
+            ></a-sphere>
+
+            <!-- Outer Atmospheric Glow -->
+            <a-sphere
+              radius="1.55"
+              material="shader: standard; 
+                    opacity: 0.1; 
+                    transparent: true; 
+                    color: #ffffff;
+                    emissive: #b4d7ff;
+                    emissiveIntensity: 0.2"
+              animation="property: material.emissiveIntensity; to: 0.3; dur: 2000; dir: alternate; loop: true"
+            ></a-sphere>
+
+            <!-- Dynamic Cloud Layer -->
+            <a-sphere
+              radius="1.51"
+              material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Earthcloud1k.png/1024px-Earthcloud1k.png; 
+                    transparent: true; 
+                    opacity: 0.8;
+                    roughness: 1;
+                    metalness: 0"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
+            ></a-sphere>
+
+            <!-- Specular Highlights -->
+            <a-sphere
+              radius="1.53"
+              material="shader: standard; 
+                    opacity: 0.1; 
+                    transparent: true; 
+                    color: #ffffff;
+                    metalness: 1;
+                    roughness: 0.3"
+            ></a-sphere>
+          </a-sphere>
+
+          <!-- Moon System -->
+          <a-entity
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 648000"
+            position="3 0 0"
+          >
+            <a-sphere
+              radius="0.4"
+              material="src: url(model/moon.jpg); 
+                    normalMap: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Moon_normal_map_from_clementine_data.png/1024px-Moon_normal_map_from_clementine_data.png;
+                    roughness: 0.8;
+                    metalness: 0.1"
+              class="clickable clickable-object moon"
+              position="0 0 0"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 648000"
+            ></a-sphere>
+          </a-entity>
+        </a-entity>
+
+        <!-- Enhanced Lighting System -->
+        <a-light
+          type="point"
+          color="#ffffff"
+          intensity="0.5"
+          position="5 0 -2"
+        ></a-light>
+        <a-light
+          type="spot"
+          color="#ffffff"
+          intensity="1"
+          angle="45"
+          position="8 0 0"
+          animation="property: intensity; from: 0.8; to: 1.2; dur: 2000; dir: alternate; loop: true"
+        >
+        </a-light>
+      </a-entity>
+
       <!-- Camera with improved controls -->
       <a-entity position="0 2 5">
         <a-camera look-controls wasd-controls="acceleration: 100">
@@ -323,86 +342,8 @@
       </a-entity>
     </a-scene>
 
-    <script>
-      // Enhanced stars generation
-      const scene = document.querySelector("a-scene");
-      for (let i = 0; i < 2000; i++) {
-        const star = document.createElement("a-sphere");
-        const size = Math.random() * 0.05 + 0.02;
-        star.setAttribute("radius", size);
-        star.setAttribute("position", {
-          x: (Math.random() - 0.5) * 200,
-          y: (Math.random() - 0.5) * 200,
-          z: (Math.random() - 0.5) * 200,
-        });
-        star.setAttribute("material", {
-          shader: "standard",
-          emissive: `rgb(255, ${200 + Math.random() * 55}, ${
-            200 + Math.random() * 55
-          })`,
-          emissiveIntensity: 1,
-        });
-        scene.appendChild(star);
-      }
 
-      // Enhanced Saturn interaction
-      const planetInfo = document.getElementById("planetInfo");
-      const saturn = document.querySelector(".saturn");
-      const blackhole = document.querySelector(".blackhole");
+    <script src="./index.js"></script>
 
-      blackhole.addEventListener("click", function () {
-        planetInfo.innerHTML = `
-    <h2>🌀 หลุมดำ (Black Hole)</h2>
-    <p>• พื้นที่ในอวกาศที่มีแรงโน้มถ่วงสูงจนแสงไม่สามารถหลุดออกมาได้</p>
-    <p>• ไม่สามารถมองเห็นได้ แต่สามารถตรวจจับจากผลกระทบที่มีต่อสิ่งรอบข้าง</p>
-    <p>• เกิดจากการยุบตัวของดาวฤกษ์ที่มีมวลมาก</p>
-`;
-        planetInfo.style.display = "block";
-
-        // Flash effect when showing info
-        planetInfo.style.animation = "none";
-        planetInfo.offsetHeight; // Trigger reflow
-        planetInfo.style.animation = null;
-
-        setTimeout(() => {
-          planetInfo.style.display = "none";
-        }, 20000); // Extended display time to 20 seconds
-      });
-
-      saturn.addEventListener("click", function () {
-        planetInfo.innerHTML = `
-                <h2>🪐 ดาวเสาร์ (Saturn)</h2>
-                <p>• เป็นดาวเคราะห์ที่ใหญ่เป็นอันดับ 2 ในระบบสุริยะ</p>
-                <p>• มีวงแหวนที่สวยงามและโดดเด่นที่สุดในระบบสุริยะ</p>
-                <p>• ระยะห่างจากดวงอาทิตย์: 1.4 พันล้านกิโลเมตร</p>
-                <p>• เส้นผ่านศูนย์กลาง: 116,460 กิโลเมตร</p>
-                <p>• อุณหภูมิเฉลี่ย: -178°C</p>
-                <p>• ระยะเวลาการโคจรรอบดวงอาทิตย์: 29.5 ปีโลก</p>
-            `;
-        planetInfo.style.display = "block";
-
-        // Flash effect when showing info
-        planetInfo.style.animation = "none";
-        planetInfo.offsetHeight; // Trigger reflow
-        planetInfo.style.animation = null;
-
-        setTimeout(() => {
-          planetInfo.style.display = "none";
-        }, 20000); // Extended display time to 20 seconds
-      });
-
-      // Enhanced hover effects
-      saturn.addEventListener("mouseenter", function () {
-        this.setAttribute("scale", "1.1 1.1 1.1");
-        document.querySelector(".interaction-hint").style.transform =
-          "translateX(-50%) scale(1.1)";
-      });
-
-      saturn.addEventListener("mouseleave", function () {
-        this.setAttribute("scale", "1 1 1");
-        document.querySelector(".interaction-hint").style.transform =
-          "translateX(-50%) scale(1)";
-      });
-    </script>
   </body>
 </html>
