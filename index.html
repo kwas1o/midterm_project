@@ -10,49 +10,164 @@
             margin: 0;
             overflow: hidden;
         }
-        a-scene {
-            width: 100vw;
-            height: 100vh;
+        .planet-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Kanit', sans-serif;
+            display: none;
+            max-width: 300px;
+            z-index: 9999;
+            border: 2px solid #ffd700;
+        }
+        .planet-info h2 {
+            margin: 0 0 10px 0;
+            color: #ffd700;
+            font-size: 1.5em;
+        }
+        .planet-info p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        .interaction-hint {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: 'Kanit', sans-serif;
+            z-index: 9999;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <a-scene>
-        <!-- Sky background -->
-        <a-sky color="#000011"></a-sky>
-
-
-        <!-- Earth -->
-        <a-sphere 
-        position="2 3 -15" 
-        radius="0.5" 
-        scale="10 10 10"
-        roughness="1" 
-        src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Earthmap1000x500compac.jpg" <!-- Earth texture -->
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
-    </a-sphere>
+    <div id="planetInfo" class="planet-info"></div>
+    <div class="interaction-hint">🖱️ คลิกที่ดาวเสาร์เพื่อดูข้อมูล | WASD = เคลื่อนที่ | เมาส์ = มองรอบทิศทาง</div>
     
+    <a-scene>
+        <a-sky color="#000011"></a-sky>
+        
+        <!-- Ambient light -->
+        <a-light type="ambient" color="#ffffff" intensity="0.2"></a-light>
 
+        <!-- Sun -->
+        <a-sphere 
+            position="0 0 -20" 
+            radius="2" 
+            material="shader: standard; emissive: #ff5500; emissiveIntensity: 1"
+            src="https://upload.wikimedia.org/wikipedia/commons/b/b4/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 25000">
+            <a-light type="point" color="#ff5500" intensity="2" distance="100"></a-light>
+        </a-sphere>
 
+        <!-- Saturn System - Moved much further away -->
+        <a-entity position="-25 0 -60">
+            <!-- Saturn Planet -->
+            <a-sphere 
+                id="saturn"
+                radius="1.5"
+                material="src: https://upload.wikimedia.org/wikipedia/commons/e/e4/Saturn_%28planet%29_surface.jpg; roughness: 0.8"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 15000"
+                class="clickable saturn"
+                event-set__enter="scale: 1.1 1.1 1.1"
+                event-set__leave="scale: 1 1 1">
+                <!-- Atmosphere glow -->
+                <a-sphere 
+                    radius="1.6"
+                    material="shader: flat; color: #d4b36b; opacity: 0.3"
+                    animation="property: material.opacity; to: 0.5; dur: 2000; dir: alternate; loop: true">
+                </a-sphere>
+            </a-sphere>
 
-        <!-- Stars -->
-        <a-entity id="stars"></a-entity>
+            <!-- Ring System -->
+            <a-entity rotation="90 0 0" scale="1 1 0.1">
+                <!-- Main ring -->
+                <a-torus 
+                    radius="3.5" 
+                    radius-tubular="0.8"
+                    segments-tubular="100"
+                    material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Saturn%27s_rings_dark_side_mosaic.jpg/1280px-Saturn%27s_rings_dark_side_mosaic.jpg; repeat: 8 1; roughness: 0.8"
+                    animation="property: rotation; to: 0 360 0; loop: true; dur: 30000">
+                </a-torus>
+                <!-- Inner ring with transparency -->
+                <a-torus 
+                    radius="2.8" 
+                    radius-tubular="0.4"
+                    segments-tubular="100"
+                    material="color: #a69275; opacity: 0.4"
+                    animation="property: rotation; to: 0 -360 0; loop: true; dur: 35000">
+                </a-torus>
+            </a-entity>
+        </a-entity>
 
-        <!-- Camera -->
-        <a-camera position="0 1.6 0"></a-camera>
+        <!-- Camera with improved controls -->
+        <a-entity position="0 2 5">
+            <a-camera look-controls wasd-controls="acceleration: 100">
+                <a-cursor
+                    color="white"
+                    scale="0.8 0.8 0.8"
+                    animation__click="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 150; startEvents: click"
+                    animation__fusing="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 1500; startEvents: fusing"
+                    raycaster="objects: .clickable">
+                </a-cursor>
+            </a-camera>
+        </a-entity>
     </a-scene>
 
     <script>
-        const starsEntity = document.getElementById('stars');
-        const starCount = 1000;
-
-        for (let i = 0; i < starCount; i++) {
+        // Stars generation
+        const scene = document.querySelector('a-scene');
+        for (let i = 0; i < 2000; i++) {
             const star = document.createElement('a-sphere');
-            star.setAttribute('radius', '0.05');
-            star.setAttribute('color', 'white');
-            star.setAttribute('position', `${(Math.random() - 0.5) * 100} ${(Math.random() - 0.5) * 100} ${(Math.random() - 0.5) * 100}`);
-            starsEntity.appendChild(star);
+            const size = Math.random() * 0.05 + 0.02;
+            star.setAttribute('radius', size);
+            star.setAttribute('position', {
+                x: (Math.random() - 0.5) * 200,
+                y: (Math.random() - 0.5) * 200,
+                z: (Math.random() - 0.5) * 200
+            });
+            star.setAttribute('color', `rgb(255, ${200 + Math.random() * 55}, ${200 + Math.random() * 55})`);
+            scene.appendChild(star);
         }
+
+        // Saturn interaction
+        const planetInfo = document.getElementById('planetInfo');
+        const saturn = document.querySelector('.saturn');
+        
+        saturn.addEventListener('click', function() {
+            planetInfo.innerHTML = `
+                <h2>🪐 ดาวเสาร์ (Saturn)</h2>
+                <p>• เป็นดาวเคราะห์ที่ใหญ่เป็นอันดับ 2 ในระบบสุริยะ</p>
+                <p>• มีวงแหวนที่สวยงามและโดดเด่นที่สุดในระบบสุริยะ</p>
+                <p>• ระยะห่างจากดวงอาทิตย์: 1.4 พันล้านกิโลเมตร</p>
+                <p>• เส้นผ่านศูนย์กลาง: 116,460 กิโลเมตร</p>
+                <p>• อุณหภูมิเฉลี่ย: -178°C</p>
+                <p>• ระยะเวลาการโคจรรอบดวงอาทิตย์: 29.5 ปีโลก</p>
+            `;
+            planetInfo.style.display = 'block';
+            
+            setTimeout(() => {
+                planetInfo.style.display = 'none';
+            }, 15000); // ขยายเวลาแสดงผลเป็น 15 วินาที
+        });
+
+        // Hover effect for Saturn
+        saturn.addEventListener('mouseenter', function() {
+            this.setAttribute('scale', '1.1 1.1 1.1');
+        });
+        
+        saturn.addEventListener('mouseleave', function() {
+            this.setAttribute('scale', '1 1 1');
+        });
     </script>
 </body>
 </html>
