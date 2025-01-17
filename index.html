@@ -1,137 +1,408 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Realistic Black Hole</title>
+    <title>Solar System 3D Web</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; }
-        .instructions {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            color: white;
-            font-family: Arial, sans-serif;
-            background: rgba(0,0,0,0.7);
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 999;
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      .planet-info {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        color: white;
+        background: rgba(0, 0, 0, 0.95);
+        padding: 25px;
+        border-radius: 15px;
+        font-family: "Kanit", sans-serif;
+        display: none;
+        max-width: 350px;
+        z-index: 9999;
+        border: 3px solid #ffd700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        animation: glowBorder 2s infinite alternate;
+      }
+      @keyframes glowBorder {
+        from {
+          box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
+        to {
+          box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+      }
+      .planet-info h2 {
+        margin: 0 0 15px 0;
+        color: #ffd700;
+        font-size: 1.8em;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      }
+      .planet-info p {
+        margin: 10px 0;
+        line-height: 1.8;
+        font-size: 1.1em;
+      }
+      .interaction-hint {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-family: "Kanit", sans-serif;
+        z-index: 9999;
+        border: 2px solid #ffd700;
+        animation: float 3s ease-in-out infinite;
+      }
+      @keyframes float {
+        0% {
+          transform: translateX(-50%) translateY(0px);
+        }
+        50% {
+          transform: translateX(-50%) translateY(-10px);
+        }
+        100% {
+          transform: translateX(-50%) translateY(0px);
+        }
+      }
+      .click-indicator {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid #ffd700;
+        animation: pulse 2s infinite;
+        pointer-events: none;
+        display: none;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
     </style>
-</head>
-<body>
-    <div class="instructions">
-        Use WASD to move, mouse to look around
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="planetInfo" class="planet-info"></div>
+    <div class="interaction-hint">
+      🪐 คลิกที่ดาวเสาร์เพื่อดูข้อมูล | WASD = เคลื่อนที่ | เมาส์ = มองรอบทิศทาง
     </div>
+    <div id="clickIndicator" class="click-indicator"></div>
+
     <a-scene>
-        <a-sky color="#000000"></a-sky>
+      <a-sky color="#000011"></a-sky>
 
-        <!-- Black Hole System -->
-        <a-entity position="0 0 -20">
-            <!-- Event Horizon (pure black sphere) -->
-            <a-sphere position="0 0 0" radius="2"
-                material="shader: standard; color: #000000; emissive: #000000; metalness: 1; roughness: 0">
-            </a-sphere>
+      <!-- Ambient light -->
+      <a-light type="ambient" color="#ffffff" intensity="0.3"></a-light>
 
-            <!-- Multi-layered Accretion Disk for more realistic effect -->
-            <a-entity animation="property: rotation; to: 0 360 0; loop: true; dur: 6000" scale="0.7 0.7 0.7">
-                <!-- Inner hot regions -->
-                <a-torus position="0 0 0" 
-                    radius="2.2" radius-tubular="0.3"
-                    segments-tubular="100"
-                    rotation="80 0 0"
-                    material="shader: standard; color: #FF2200; emissive: #FF2200; emissiveIntensity: 1; metalness: 0.8; roughness: 0.2"
-                    animation="property: rotation; to: 80 360 0; loop: true; dur: 15000">
-                </a-torus>
-                
-                <a-torus position="0 0 0" 
-                    radius="2.8" radius-tubular="0.4"
-                    segments-tubular="100"
-                    rotation="75 0 0"
-                    material="shader: standard; color: #FF4400; emissive: #FF4400; emissiveIntensity: 0.9; metalness: 0.7; roughness: 0.3"
-                    animation="property: rotation; to: 75 360 0; loop: true; dur: 18000">
-                </a-torus>
+      <!-- Sun -->
+      <a-sphere
+        position="0 0 -20"
+        radius="2"
+        material="shader: standard; emissive: #ff5500; emissiveIntensity: 1"
+        src="https://upload.wikimedia.org/wikipedia/commons/b/b4/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 25000"
+      >
+        <a-light
+          type="point"
+          color="#ff5500"
+          intensity="1.5"
+          distance="100"
+        ></a-light>
+      </a-sphere>
 
-                <a-torus position="0 0 0" 
-                    radius="3.4" radius-tubular="0.5"
-                    segments-tubular="100"
-                    rotation="70 0 0"
-                    material="shader: standard; color: #FF6600; emissive: #FF6600; emissiveIntensity: 0.8; metalness: 0.6; roughness: 0.4"
-                    animation="property: rotation; to: 70 360 0; loop: true; dur: 21000">
-                </a-torus>
+      <!-- Saturn System - Enhanced visibility -->
+      <a-entity position="-25 0 -60">
+        <!-- Spotlight for Saturn -->
+        <a-light
+          type="spot"
+          color="#ffffff"
+          intensity="1.5"
+          angle="30"
+          distance="20"
+          position="5 5 5"
+        ></a-light>
 
-                <!-- Outer cooler regions -->
-                <a-torus position="0 0 0" 
-                    radius="4" radius-tubular="0.6"
-                    segments-tubular="100"
-                    rotation="65 0 0"
-                    material="shader: standard; color: #FF8800; emissive: #FF8800; emissiveIntensity: 0.7; metalness: 0.5; roughness: 0.5"
-                    animation="property: rotation; to: 65 360 0; loop: true; dur: 24000">
-                </a-torus>
+        <!-- Saturn Planet -->
+        <a-sphere
+          id="saturn"
+          radius="2"
+          material="src: https://upload.wikimedia.org/wikipedia/commons/e/e4/Saturn_%28planet%29_surface.jpg; roughness: 0.7; metalness: 0.3"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 15000"
+          class="clickable saturn"
+          event-set__enter="scale: 1.1 1.1 1.1"
+          event-set__leave="scale: 1 1 1"
+        >
+          <!-- Enhanced atmosphere glow -->
+          <a-sphere
+            radius="2.1"
+            material="shader: flat; color: #d4b36b; opacity: 0.4"
+            animation="property: material.opacity; to: 0.6; dur: 2000; dir: alternate; loop: true"
+          >
+          </a-sphere>
+          <!-- Additional highlight effect -->
+          <a-sphere
+            radius="2.2"
+            material="shader: flat; color: #ffffff; opacity: 0.1"
+            animation="property: material.opacity; to: 0.3; dur: 1500; dir: alternate; loop: true"
+          >
+          </a-sphere>
+        </a-sphere>
 
-                <a-torus position="0 0 0" 
-                    radius="4.6" radius-tubular="0.7"
-                    segments-tubular="100"
-                    rotation="60 0 0"
-                    material="shader: standard; color: #FFA500; emissive: #FFA500; emissiveIntensity: 0.6; metalness: 0.4; roughness: 0.6"
-                    animation="property: rotation; to: 60 360 0; loop: true; dur: 27000">
-                </a-torus>
-            </a-entity>
+        <!-- Enhanced Ring System -->
+        <a-entity rotation="90 0 0" scale="1 1 0.1">
+          <!-- Outer glow ring -->
+          <a-torus
+            radius="5"
+            radius-tubular="0.1"
+            segments-tubular="100"
+            material="shader: flat; color: #ffd700; opacity: 0.2"
+            animation="property: material.opacity; to: 0.4; dur: 2000; dir: alternate; loop: true"
+          >
+          </a-torus>
+          <!-- Main ring -->
+          <a-torus
+            radius="4.5"
+            radius-tubular="1"
+            segments-tubular="100"
+            material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Saturn%27s_rings_dark_side_mosaic.jpg/1280px-Saturn%27s_rings_dark_side_mosaic.jpg; repeat: 8 1; roughness: 0.7"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 30000"
+          >
+          </a-torus>
+          <!-- Inner ring with enhanced visibility -->
+          <a-torus
+            radius="3.5"
+            radius-tubular="0.5"
+            segments-tubular="100"
+            material="color: #a69275; opacity: 0.5"
+            animation="property: rotation; to: 0 -360 0; loop: true; dur: 35000"
+          >
+          </a-torus>
+        </a-entity>
+      </a-entity>
 
-            <!-- Gravitational Lensing Effect -->
-            <a-entity>
-                <!-- Multiple layers of transparent spheres for lensing -->
-                <a-sphere position="0 0 0" radius="2.1"
-                    material="shader: standard; opacity: 0.3; color: #000000; metalness: 1; roughness: 0">
-                </a-sphere>
-                <a-sphere position="0 0 0" radius="2.3"
-                    material="shader: standard; opacity: 0.25; color: #000000; metalness: 1; roughness: 0">
-                </a-sphere>
-                <a-sphere position="0 0 0" radius="2.5"
-                    material="shader: standard; opacity: 0.2; color: #000000; metalness: 1; roughness: 0">
-                </a-sphere>
-                <a-sphere position="0 0 0" radius="2.7"
-                    material="shader: standard; opacity: 0.15; color: #000000; metalness: 1; roughness: 0">
-                </a-sphere>
-            </a-entity>
+      <!-- Black Hole System -->
+      <a-entity position="0 0 -100">
+        <!-- Event Horizon (pure black sphere) -->
+        <a-sphere
+          class="clickable blackhole"
+          position="0 0 0"
+          radius="2"
+          material="shader: standard; color: #000000; emissive: #000000; metalness: 1; roughness: 0"
+        >
+        </a-sphere>
 
-            <!-- Dynamic Lighting -->
-            <!-- <a-light type="point" color="#FF4400" intensity="1.5" position="0 3 0"
+        <!-- Multi-layered Accretion Disk for more realistic effect -->
+        <a-entity
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"
+          scale="0.5 0.5 0.5"
+        >
+          <!-- Inner hot regions -->
+          <a-torus
+            position="0 0 0"
+            id="blackhole"
+            radius="2.2"
+            radius-tubular="0.3"
+            segments-tubular="100"
+            rotation="80 0 0"
+            material="shader: standard; color: #FF2200; emissive: #FF2200; emissiveIntensity: 1; metalness: 0.8; roughness: 0.2"
+            animation="property: rotation; to: 80 360 0; loop: true; dur: 15000"
+          >
+          </a-torus>
+
+          <a-torus
+            position="0 0 0"
+            radius="2.8"
+            radius-tubular="0.4"
+            segments-tubular="100"
+            rotation="75 0 0"
+            material="shader: standard; color: #FF4400; emissive: #FF4400; emissiveIntensity: 0.9; metalness: 0.7; roughness: 0.3"
+            animation="property: rotation; to: 75 360 0; loop: true; dur: 18000"
+          >
+          </a-torus>
+
+          <a-torus
+            position="0 0 0"
+            radius="3.4"
+            radius-tubular="0.5"
+            segments-tubular="100"
+            rotation="70 0 0"
+            material="shader: standard; color: #FF6600; emissive: #FF6600; emissiveIntensity: 0.8; metalness: 0.6; roughness: 0.4"
+            animation="property: rotation; to: 70 360 0; loop: true; dur: 21000"
+          >
+          </a-torus>
+
+          <!-- Outer cooler regions -->
+          <a-torus
+            position="0 0 0"
+            radius="4"
+            radius-tubular="0.6"
+            segments-tubular="100"
+            rotation="65 0 0"
+            material="shader: standard; color: #FF8800; emissive: #FF8800; emissiveIntensity: 0.7; metalness: 0.5; roughness: 0.5"
+            animation="property: rotation; to: 65 360 0; loop: true; dur: 24000"
+          >
+          </a-torus>
+
+          <a-torus
+            position="0 0 0"
+            radius="4.6"
+            radius-tubular="0.7"
+            segments-tubular="100"
+            rotation="60 0 0"
+            material="shader: standard; color: #FFA500; emissive: #FFA500; emissiveIntensity: 0.6; metalness: 0.4; roughness: 0.6"
+            animation="property: rotation; to: 60 360 0; loop: true; dur: 27000"
+          >
+          </a-torus>
+        </a-entity>
+
+        <!-- Gravitational Lensing Effect -->
+        <a-entity>
+          <!-- Multiple layers of transparent spheres for lensing -->
+          <a-sphere
+            position="0 0 0"
+            radius="2.1"
+            material="shader: standard; opacity: 0.3; color: #000000; metalness: 1; roughness: 0"
+          >
+          </a-sphere>
+          <a-sphere
+            position="0 0 0"
+            radius="2.3"
+            material="shader: standard; opacity: 0.25; color: #000000; metalness: 1; roughness: 0"
+          >
+          </a-sphere>
+          <a-sphere
+            position="0 0 0"
+            radius="2.5"
+            material="shader: standard; opacity: 0.2; color: #000000; metalness: 1; roughness: 0"
+          >
+          </a-sphere>
+          <a-sphere
+            position="0 0 0"
+            radius="2.7"
+            material="shader: standard; opacity: 0.15; color: #000000; metalness: 1; roughness: 0"
+          >
+          </a-sphere>
+        </a-entity>
+
+        <!-- Dynamic Lighting -->
+        <!-- <a-light type="point" color="#FF4400" intensity="1.5" position="0 3 0"
                 animation="property: intensity; dir: alternate; dur: 3000; easing: easeInOutSine; loop: true; to: 2">
             </a-light>
             <a-light type="point" color="#FF8800" intensity="1" position="0 -3 0"
                 animation="property: intensity; dir: alternate; dur: 3500; easing: easeInOutSine; loop: true; to: 1.5">
             </a-light> -->
-        </a-entity>
+      </a-entity>
 
-              <!-- Stars -->
-      <a-entity id="stars"></a-entity>
-
-        <!-- Camera -->
-        <a-entity position="0 0 10">
-            <a-camera look-controls wasd-controls></a-camera>
-        </a-entity>
+      <!-- Camera with improved controls -->
+      <a-entity position="0 2 5">
+        <a-camera look-controls wasd-controls="acceleration: 100">
+          <a-cursor
+            color="#ffd700"
+            scale="0.8 0.8 0.8"
+            animation__click="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 150; startEvents: click"
+            animation__fusing="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 1500; startEvents: fusing"
+            raycaster="objects: .clickable"
+          >
+          </a-cursor>
+        </a-camera>
+      </a-entity>
     </a-scene>
 
-
-
     <script>
-        const starsEntity = document.getElementById("stars");
-        const starCount = 1000;
-  
-        for (let i = 0; i < starCount; i++) {
-          const star = document.createElement("a-sphere");
-          star.setAttribute("radius", "0.05");
-          star.setAttribute("color", "white");
-          star.setAttribute(
-            "position",
-            `${(Math.random() - 0.5) * 100} ${(Math.random() - 0.5) * 100} ${
-              (Math.random() - 0.5) * 100
-            }`
-          );
-          starsEntity.appendChild(star);
-        }
-      </script>
-</body>
+      // Enhanced stars generation
+      const scene = document.querySelector("a-scene");
+      for (let i = 0; i < 2000; i++) {
+        const star = document.createElement("a-sphere");
+        const size = Math.random() * 0.05 + 0.02;
+        star.setAttribute("radius", size);
+        star.setAttribute("position", {
+          x: (Math.random() - 0.5) * 200,
+          y: (Math.random() - 0.5) * 200,
+          z: (Math.random() - 0.5) * 200,
+        });
+        star.setAttribute("material", {
+          shader: "standard",
+          emissive: `rgb(255, ${200 + Math.random() * 55}, ${
+            200 + Math.random() * 55
+          })`,
+          emissiveIntensity: 1,
+        });
+        scene.appendChild(star);
+      }
+
+      // Enhanced Saturn interaction
+      const planetInfo = document.getElementById("planetInfo");
+      const saturn = document.querySelector(".saturn");
+      const blackhole = document.querySelector(".blackhole");
+
+      blackhole.addEventListener("click", function () {
+        planetInfo.innerHTML = `
+    <h2>🌀 หลุมดำ (Black Hole)</h2>
+    <p>• พื้นที่ในอวกาศที่มีแรงโน้มถ่วงสูงจนแสงไม่สามารถหลุดออกมาได้</p>
+    <p>• ไม่สามารถมองเห็นได้ แต่สามารถตรวจจับจากผลกระทบที่มีต่อสิ่งรอบข้าง</p>
+    <p>• เกิดจากการยุบตัวของดาวฤกษ์ที่มีมวลมาก</p>
+`;
+        planetInfo.style.display = "block";
+
+        // Flash effect when showing info
+        planetInfo.style.animation = "none";
+        planetInfo.offsetHeight; // Trigger reflow
+        planetInfo.style.animation = null;
+
+        setTimeout(() => {
+          planetInfo.style.display = "none";
+        }, 20000); // Extended display time to 20 seconds
+      });
+
+      saturn.addEventListener("click", function () {
+        planetInfo.innerHTML = `
+                <h2>🪐 ดาวเสาร์ (Saturn)</h2>
+                <p>• เป็นดาวเคราะห์ที่ใหญ่เป็นอันดับ 2 ในระบบสุริยะ</p>
+                <p>• มีวงแหวนที่สวยงามและโดดเด่นที่สุดในระบบสุริยะ</p>
+                <p>• ระยะห่างจากดวงอาทิตย์: 1.4 พันล้านกิโลเมตร</p>
+                <p>• เส้นผ่านศูนย์กลาง: 116,460 กิโลเมตร</p>
+                <p>• อุณหภูมิเฉลี่ย: -178°C</p>
+                <p>• ระยะเวลาการโคจรรอบดวงอาทิตย์: 29.5 ปีโลก</p>
+            `;
+        planetInfo.style.display = "block";
+
+        // Flash effect when showing info
+        planetInfo.style.animation = "none";
+        planetInfo.offsetHeight; // Trigger reflow
+        planetInfo.style.animation = null;
+
+        setTimeout(() => {
+          planetInfo.style.display = "none";
+        }, 20000); // Extended display time to 20 seconds
+      });
+
+      // Enhanced hover effects
+      saturn.addEventListener("mouseenter", function () {
+        this.setAttribute("scale", "1.1 1.1 1.1");
+        document.querySelector(".interaction-hint").style.transform =
+          "translateX(-50%) scale(1.1)";
+      });
+
+      saturn.addEventListener("mouseleave", function () {
+        this.setAttribute("scale", "1 1 1");
+        document.querySelector(".interaction-hint").style.transform =
+          "translateX(-50%) scale(1)";
+      });
+    </script>
+  </body>
 </html>
