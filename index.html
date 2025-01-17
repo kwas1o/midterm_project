@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System 3D Web</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        a-scene {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <a-scene>
+        <!-- Sky background -->
+        <a-sky color="#000011"></a-sky>
+
+
+        <!-- Earth -->
+        <a-sphere 
+        position="2 3 -15" 
+        radius="0.5" 
+        scale="10 10 10"
+        roughness="1" 
+        src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Earthmap1000x500compac.jpg" <!-- Earth texture -->
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
+    </a-sphere>
+    
+
+
+
+        <!-- Stars -->
+        <a-entity id="stars"></a-entity>
+
+        <!-- Camera -->
+        <a-camera position="0 1.6 0"></a-camera>
+    </a-scene>
+
+    <script>
+        const starsEntity = document.getElementById('stars');
+        const starCount = 1000;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('a-sphere');
+            star.setAttribute('radius', '0.05');
+            star.setAttribute('color', 'white');
+            star.setAttribute('position', `${(Math.random() - 0.5) * 100} ${(Math.random() - 0.5) * 100} ${(Math.random() - 0.5) * 100}`);
+            starsEntity.appendChild(star);
+        }
+    </script>
+</body>
+</html>
