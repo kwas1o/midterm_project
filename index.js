@@ -1,7 +1,7 @@
 // Enhanced stars generation
 const scene = document.querySelector("a-scene");
 
-for (let i = 0; i < 10000; i++) {
+for (let i = 0; i < 1000; i++) {
   const star = document.createElement("a-sphere");
 
   // Set initial size
