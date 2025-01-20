@@ -20,8 +20,10 @@
     🪐 คลิกที่ดาวเสาร์เพื่อดูข้อมูล | WASD = เคลื่อนที่ | เมาส์ = มองรอบทิศทาง
   </div>
 
-  <a-scene cursor="rayOrigin: mouse">
-    <a-sky color="#000011"></a-sky>
+  <a-scene cursor="rayOrigin: mouse" id="scene" fullscreen>
+    <!-- <a-sky color="#000011"></a-sky> -->
+    <a-sky  src="url(model/galaxy1.jpg)" ></a-sky>
+
 
     <!-- Ambient light -->
     <!-- <a-light type="ambient" color="#ffffff" intensity="0.1" position="0 0 -200"></a-light> -->
@@ -203,19 +205,22 @@
 
     <!-- Black Hole System -->
 
+<!-- Audio entity set to muted initially -->
+<audio id="background-music" autoplay loop muted>
+  <source src="/model/inter.MP3" type="audio/mpeg">
+</audio>
 
-
-    <!-- Camera with improved controls -->
-    <a-entity position="0 2 5">
-      <a-camera look-controls wasd-controls="acceleration: 100">
-        <a-cursor color="#ffd700" scale="0.8 0.8 0.8"
-          animation__click="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 150; startEvents: click"
-          animation__fusing="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 1500; startEvents: fusing"
-          raycaster="objects: .clickable">
-        </a-cursor>
-      </a-camera>
-    </a-entity>
-  </a-scene>
+<!-- Camera with a cursor that will unmute the sound when clicked -->
+<a-entity position="0 2 5">
+  <a-camera look-controls wasd-controls="acceleration: 100">
+    <a-cursor color="#ffd700" scale="0.8 0.8 0.8"
+      animation__click="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 150; startEvents: click"
+      animation__fusing="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 1500; startEvents: fusing"
+      raycaster="objects: .clickable" onclick="document.getElementById('background-music').muted = false;">
+    </a-cursor>
+  </a-camera>
+</a-entity>
+</a-scene>
 
 
   <script src="./index.js"></script>
