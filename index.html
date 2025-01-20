@@ -1,383 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solar System 3D Web</title>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./style.css">
-  </head>
-  <body>
-    <div id="customCursor" class="custom-cursor"></div>
-    <div id="planetInfo" class="planet-info">
-        <button class="close-button">✕</button>
-        <div id="infoContent"></div>
-    </div>
-    <div class="interaction-hint">
-      🪐 คลิกที่ดาวเสาร์เพื่อดูข้อมูล | WASD = เคลื่อนที่ | เมาส์ = มองรอบทิศทาง
-    </div>
-    <!-- <div id="clickIndicator" class="click-indicator"></div> -->
 
-    <a-scene cursor="rayOrigin: mouse">
-      <a-sky color="#000011"></a-sky>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solar System 3D Web</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css">
+</head>
 
-      <!-- Ambient light -->
-      <a-light type="ambient" color="#ffffff" intensity="0.3"></a-light>
+<body>
+  <div id="customCursor" class="custom-cursor"></div>
+  <div id="planetInfo" class="planet-info">
+    <button class="close-button">✕</button>
+    <div id="infoContent"></div>
+  </div>
+  <div class="interaction-hint">
+    🪐 คลิกที่ดาวเสาร์เพื่อดูข้อมูล | WASD = เคลื่อนที่ | เมาส์ = มองรอบทิศทาง
+  </div>
 
-      <!-- Sun -->
-      <a-sphere
-        position="0 0 -20"
-        radius="2"
-        material="shader: standard; emissive: #ff5500; emissiveIntensity: 1"
-        src= url(model/sun.jpg) 
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 25000"
-        class="clickable clickable-object sun"
-      >
-        <!-- <a-light
-          type="point"
-          color="#ff5500"
-          intensity="1.5"
-          distance="100"
-        ></a-light> -->
+  <a-scene cursor="rayOrigin: mouse">
+    <a-sky color="#000011"></a-sky>
 
-                <!-- Dynamic Lighting -->
-        <a-light type="point" color="#FF4400" intensity="1.5" position="0 3 0"
-                animation="property: intensity; dir: alternate; dur: 3000; easing: easeInOutSine; loop: true; to: 2">
-            </a-light>
-            <a-light type="point" color="#FF8800" intensity="1" position="0 -3 0"
-                animation="property: intensity; dir: alternate; dur: 3500; easing: easeInOutSine; loop: true; to: 1.5">
-            </a-light>
-      </a-sphere>
+    <!-- Ambient light -->
+    <!-- <a-light type="ambient" color="#ffffff" intensity="0.1" position="0 0 -200"></a-light> -->
+    <!-- Enhanced Lighting System -->
+    <a-light type="spot" color="#ffffff" intensity="1" angle="45" position="0 0 -95"
+      animation="property: intensity; from: 0.8; to: 1.2; dur: 2000; dir: alternate; loop: true">
+    </a-light>
 
-      <!-- Saturn System - Enhanced visibility -->
-      <a-entity position="-25 0 -60">
-        <!-- Spotlight for Saturn -->
-        <a-light
-          type="spot"
-          color="#ffffff"
-          intensity="1.5"
-          angle="30"
-          distance="20"
-          position="5 5 5"
-        ></a-light>
+    <!-- Sun -->
+    <a-sphere position="0 0 -200" radius="20"
+      material="shader: standard; emissive: #ff5500; emissiveIntensity: 1" src=url(model/sun.jpg)
+      animation="property: rotation; to: 0 360 0; loop: true; dur: 35000" class="clickable clickable-object sun">
+      <a-light type="point" color="#ffffff" intensity="0.5" distance="1000"></a-light>
 
-        <!-- Saturn Planet -->
-        <a-sphere
-          id="saturn"
-          radius="2"
-          material="src: https://upload.wikimedia.org/wikipedia/commons/e/e4/Saturn_%28planet%29_surface.jpg; roughness: 0.7; metalness: 0.3"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 15000"
-          class="clickable clickable-object saturn"
-          event-set__enter="scale: 1.1 1.1 1.1"
-          event-set__leave="scale: 1 1 1"
-        >
-          <!-- Enhanced atmosphere glow -->
-          <a-sphere
-            radius="2.1"
-            material="shader: flat; color: #d4b36b; opacity: 0.4"
-            animation="property: material.opacity; to: 0.6; dur: 2000; dir: alternate; loop: true"
-          >
-          </a-sphere>
-          <!-- Additional highlight effect -->
-          <a-sphere
-            radius="2.2"
-            material="shader: flat; color: #ffffff; opacity: 0.1"
-            animation="property: material.opacity; to: 0.3; dur: 1500; dir: alternate; loop: true"
-          >
-          </a-sphere>
-        </a-sphere>
+      <!-- Dynamic Lighting -->
+      <a-light type="point" color="#ffffff" intensity="2" distance="500" decay="2" castShadow="true"></a-light>
 
-        <!-- Enhanced Ring System -->
-        <a-entity rotation="90 0 0" scale="1 1 0.1">
-          <!-- Outer glow ring -->
-          <a-torus
-            radius="5"
-            radius-tubular="0.1"
-            segments-tubular="100"
-            material="shader: flat; color: #ffd700; opacity: 0.2"
-            animation="property: material.opacity; to: 0.4; dur: 2000; dir: alternate; loop: true"
-          >
-          </a-torus>
-          <!-- Main ring -->
-          <a-torus
-            radius="4.5"
-            radius-tubular="1"
-            segments-tubular="100"
-            material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Saturn%27s_rings_dark_side_mosaic.jpg/1280px-Saturn%27s_rings_dark_side_mosaic.jpg; repeat: 8 1; roughness: 0.7"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 30000"
-          >
-          </a-torus>
-          <!-- Inner ring with enhanced visibility -->
-          <a-torus
-            radius="3.5"
-            radius-tubular="0.5"
-            segments-tubular="100"
-            material="color: #a69275; opacity: 0.5"
-            animation="property: rotation; to: 0 -360 0; loop: true; dur: 35000"
-          >
-          </a-torus>
-        </a-entity>
-      </a-entity>
-
-      <!-- Black Hole System -->
-      <a-entity position="0 0 -100" class="clickable clickable-object blackhole">
-        <!-- Event Horizon (pure black sphere) -->
-        <a-sphere
-          class="clickable clickable-object blackhole"
-          position="0 0 0"
-          radius="2"
-          material="shader: standard; color: #000000; emissive: #000000; metalness: 1; roughness: 0"
-        >
-        </a-sphere>
-
-        <!-- Multi-layered Accretion Disk for more realistic effect -->
-        <a-entity
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"
-          scale="0.5 0.5 0.5"
-        >
-          <!-- Inner hot regions -->
-          <a-torus
-            position="0 0 0"
-            id="blackhole"
-            radius="2.2"
-            radius-tubular="0.3"
-            segments-tubular="100"
-            rotation="80 0 0"
-            material="shader: standard; color: #FF2200; emissive: #FF2200; emissiveIntensity: 1; metalness: 0.8; roughness: 0.2"
-            animation="property: rotation; to: 80 360 0; loop: true; dur: 15000"
-          >
-          </a-torus>
-
-          <a-torus
-            position="0 0 0"
-            radius="2.8"
-            radius-tubular="0.4"
-            segments-tubular="100"
-            rotation="75 0 0"
-            material="shader: standard; color: #FF4400; emissive: #FF4400; emissiveIntensity: 0.9; metalness: 0.7; roughness: 0.3"
-            animation="property: rotation; to: 75 360 0; loop: true; dur: 18000"
-          >
-          </a-torus>
-
-          <a-torus
-            position="0 0 0"
-            radius="3.4"
-            radius-tubular="0.5"
-            segments-tubular="100"
-            rotation="70 0 0"
-            material="shader: standard; color: #FF6600; emissive: #FF6600; emissiveIntensity: 0.8; metalness: 0.6; roughness: 0.4"
-            animation="property: rotation; to: 70 360 0; loop: true; dur: 21000"
-          >
-          </a-torus>
-
-          <!-- Outer cooler regions -->
-          <a-torus
-            position="0 0 0"
-            radius="4"
-            radius-tubular="0.6"
-            segments-tubular="100"
-            rotation="65 0 0"
-            material="shader: standard; color: #FF8800; emissive: #FF8800; emissiveIntensity: 0.7; metalness: 0.5; roughness: 0.5"
-            animation="property: rotation; to: 65 360 0; loop: true; dur: 24000"
-          >
-          </a-torus>
-
-          <a-torus
-            position="0 0 0"
-            radius="4.6"
-            radius-tubular="0.7"
-            segments-tubular="100"
-            rotation="60 0 0"
-            material="shader: standard; color: #FFA500; emissive: #FFA500; emissiveIntensity: 0.6; metalness: 0.4; roughness: 0.6"
-            animation="property: rotation; to: 60 360 0; loop: true; dur: 27000"
-          >
-          </a-torus>
-        </a-entity>
-
-        <!-- Gravitational Lensing Effect -->
-        <a-entity>
-          <!-- Multiple layers of transparent spheres for lensing -->
-          <a-sphere
-            position="0 0 0"
-            radius="2.1"
-            material="shader: standard; opacity: 0.3; color: #000000; metalness: 1; roughness: 0"
-          >
-          </a-sphere>
-          <a-sphere
-            position="0 0 0"
-            radius="2.3"
-            material="shader: standard; opacity: 0.25; color: #000000; metalness: 1; roughness: 0"
-          >
-          </a-sphere>
-          <a-sphere
-            position="0 0 0"
-            radius="2.5"
-            material="shader: standard; opacity: 0.2; color: #000000; metalness: 1; roughness: 0"
-          >
-          </a-sphere>
-          <a-sphere
-            position="0 0 0"
-            radius="2.7"
-            material="shader: standard; opacity: 0.15; color: #000000; metalness: 1; roughness: 0"
-          >
-          </a-sphere>
-        </a-entity>
-
-        <!-- Dynamic Lighting -->
-        <!-- <a-light type="point" color="#FF4400" intensity="1.5" position="0 3 0"
-                animation="property: intensity; dir: alternate; dur: 3000; easing: easeInOutSine; loop: true; to: 2">
-            </a-light>
-            <a-light type="point" color="#FF8800" intensity="1" position="0 -3 0"
-                animation="property: intensity; dir: alternate; dur: 3500; easing: easeInOutSine; loop: true; to: 1.5">
-            </a-light> -->
-      </a-entity>
-
-      <!-- Earth System -->
-      <a-entity position="-10 0 -40" rotation="0 0 23.5">
-        <!-- Earth Group for axial tilt -->
-        <a-entity
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 24000"
-        >
-          <!-- Main Earth Sphere -->
-          <a-sphere
-            id="earth"
-            radius="1.5"
-            material="src: url(model/earth.jpg); 
-                  normalMap: https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Earthbump1k.jpg/1024px-Earthbump1k.jpg;
-                  roughness: 0.5; 
-                  metalness: 0.1"
-            class="clickable clickable-object earth"
-            event-set__enter="scale: 1.1 1.1 1.1"
-            event-set__leave="scale: 1 1 1"
-          >
-            <!-- Detailed Atmosphere Layers -->
-            <a-sphere
-              radius="1.52"
-              material="shader: standard; 
-                    opacity: 0.3; 
-                    transparent: true; 
-                    color: #b4d7ff"
-              animation="property: material.opacity; to: 0.4; dur: 2000; dir: alternate; loop: true"
-            ></a-sphere>
-
-            <!-- Outer Atmospheric Glow -->
-            <a-sphere
-              radius="1.55"
-              material="shader: standard; 
-                    opacity: 0.1; 
-                    transparent: true; 
-                    color: #ffffff;
-                    emissive: #b4d7ff;
-                    emissiveIntensity: 0.2"
-              animation="property: material.emissiveIntensity; to: 0.3; dur: 2000; dir: alternate; loop: true"
-            ></a-sphere>
-
-
-          </a-sphere>
-
-          <!-- Moon System -->
-          <a-entity
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 648000"
-            position="3 0 0"
-          >
-            <a-sphere
-              radius="0.4"
-              material="src: url(model/moon.png); 
-                    normalMap: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Moon_normal_map_from_clementine_data.png/1024px-Moon_normal_map_from_clementine_data.png;
-                    roughness: 0.8;
-                    metalness: 0.1"
-              class="clickable clickable-object moon"
-              position="0 0 0"
-              animation="property: rotation; to: 0 360 0; loop: true; dur: 648000"
-            ></a-sphere>
-          </a-entity>
-        </a-entity>
-
-        <!-- Enhanced Lighting System -->
-        <a-light
-          type="point"
-          color="#ffffff"
-          intensity="0.5"
-          position="5 0 -2"
-        ></a-light>
-        <a-light
-          type="spot"
-          color="#ffffff"
-          intensity="1"
-          angle="45"
-          position="8 0 0"
-          animation="property: intensity; from: 0.8; to: 1.2; dur: 2000; dir: alternate; loop: true"
-        >
-        </a-light>
-      </a-entity>
+    </a-sphere>
 
     <!-- Mercury System -->
-    <a-entity position="-5 1 -30">
-        <!-- Mercury Planet -->
-        <a-sphere
-            id="mercury"
-            radius="0.5"
-            material="src: url(model/mercury.jpg);
+    <a-entity position="-5 2 -150">
+      <!-- Mercury Planet -->
+      <a-sphere id="mercury" radius="1" material="src: url(model/mercury.jpg);
+                  normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
+                  roughness: 0.8; metalness: 0.2" animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
+        class="clickable clickable-object mercury" event-set__enter="scale: 1.1 1.1 1.1"
+        event-set__leave="scale: 1 1 1">
+      </a-sphere>
+
+    </a-entity>
+
+    <!-- Venus System -->
+    <a-entity position="5 4 -140">
+      <!-- Venus Planet -->
+      <a-sphere id="venus" radius="2" material="src: url(model/venus.jpg); 
+                  normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
+                  roughness: 0.8; metalness: 0.2" animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
+        class="clickable clickable-object venus" event-set__enter="scale: 1.1 1.1 1.1" event-set__leave="scale: 1 1 1">
+      </a-sphere>
+
+    </a-entity>
+
+    <!-- Earth System -->
+    <a-entity position="0 6 -130" rotation="0 0 23.5">
+      <!-- Earth Planet -->
+      <a-entity animation="property: rotation; to: 0 360 0; loop: true; dur: 24000">
+        <a-sphere id="earth" radius="3" material="src: url(model/earth-map.jpg); 
             normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
-            roughness: 0.8; metalness: 0.2"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
-            class="clickable clickable-object mercury"
-            event-set__enter="scale: 1.1 1.1 1.1"
-            event-set__leave="scale: 1 1 1"
-        >
+            roughness: 0.5; 
+            metalness: 0.1" class="clickable clickable-object earth" event-set__enter="scale: 1.1 1.1 1.1"
+          event-set__leave="scale: 1 1 1">
         </a-sphere>
 
-        <!-- Enhanced Lighting for Mercury -->
-        <a-light
-            type="point"
-            color="#ffffff"
-            intensity="0.5"
-            position="2 2 2"
-        ></a-light>
+        <!-- Moon System -->
+        <a-entity animation="property: rotation; to: 0 360 0; loop: true; dur: 648000" position="5 0 0">
+
+          <a-sphere id="moon" radius="0.8" material="src: url(model/moon.jpg);  
+        normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
+        roughness: 0.8; metalness: 0.1" class="clickable clickable-object moon" position="0 0 0"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 648000">
+          </a-sphere>
+        </a-entity>
+      </a-entity>
+
+
+    </a-entity>
+
+    <!-- Mars System -->
+    <a-entity position="10 2 -120">
+      <!-- Mars Planet -->
+      <a-sphere id="mars" radius="1.5" material="src: url(model/mars.jpg);
+                      normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
+                      roughness: 0.8; metalness: 0.2"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 20000" class="clickable clickable-object mars"
+        event-set__enter="scale: 1.1 1.1 1.1" event-set__leave="scale: 1 1 1">
+      </a-sphere>
+
+    </a-entity>
+
+    <!-- Jupiter System -->
+    <a-entity position="-30 5 -90">
+      <!-- Jupiter Planet -->
+      <a-sphere id="jupiter" radius="6" material="src: url(model/jupiter.jpg);
+                      normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
+                      roughness: 0.8; metalness: 0.2"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 20000" class="clickable clickable-object jupiter"
+        event-set__enter="scale: 1.1 1.1 1.1" event-set__leave="scale: 1 1 1">
+      </a-sphere>
+
+      <!-- Ring System -->
+  <a-entity rotation="90 0 0" scale="1.2 1.2 0.05">
+    <!-- Outer faint ring -->
+    <a-torus radius="8" radius-tubular="0.05" segments-tubular="100"
+      material="shader: flat; color: #d4b36b; opacity: 0.2"
+      animation="property: material.opacity; to: 0.3; dur: 2000; dir: alternate; loop: true">
+    </a-torus>
+    
+    <!-- Main faint ring -->
+    <a-torus radius="7" radius-tubular="0.3" segments-tubular="100"
+      material="src: url(https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Jupiter_ring_system.png/1024px-Jupiter_ring_system.png);
+                repeat: 6 1; opacity: 0.5; roughness: 0.5; metalness: 0.3"
+      animation="property: rotation; to: 0 360 0; loop: true; dur: 25000">
+    </a-torus>
+    
+    <!-- Inner subtle ring -->
+    <a-torus radius="6" radius-tubular="0.1" segments-tubular="100"
+      material="shader: flat; color: #ffffff; opacity: 0.1"
+      animation="property: rotation; to: 0 -360 0; loop: true; dur: 30000">
+    </a-torus>
+  </a-entity>
+
+    </a-entity>
+
+    <!-- Saturn System -->
+    <a-entity position="-40 0 -80">
+
+      
+      <!-- Saturn Planet -->
+      <a-sphere id="saturn" radius="6" material="src: url(model/saturn.jpg);
+                      normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
+                      roughness: 0.8; metalness: 0.2"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 15000" class="clickable clickable-object saturn"
+                      event-set__enter="scale: 1.1 1.1 1.1" event-set__leave="scale: 1 1 1">
+                              <!-- Enhanced atmosphere glow -->
+        <a-sphere radius="2.1" material="shader: flat; color: #d4b36b; opacity: 0.4"
+        animation="property: material.opacity; to: 0.6; dur: 2000; dir: alternate; loop: true">
+      </a-sphere>
+      <!-- Additional highlight effect -->
+      <a-sphere radius="2.2" material="shader: flat; color: #ffffff; opacity: 0.1"
+        animation="property: material.opacity; to: 0.3; dur: 1500; dir: alternate; loop: true">
+      </a-sphere>
+      </a-sphere>
+
+            <!-- Enhanced Ring System -->
+            <a-entity rotation="90 0 0" scale="1 1 0.1">
+              <!-- Outer glow ring -->
+              <a-torus radius="8" radius-tubular="0.1" segments-tubular="100"
+                material="shader: flat; color: #ffffff; opacity: 0.2"
+                animation="property: material.opacity; to: 0.4; dur: 2000; dir: alternate; loop: true">
+              </a-torus>
+              <!-- Outer glow ring -->
+              <a-torus radius="6.5" radius-tubular="0.1" segments-tubular="100"
+                material="shader: flat; color: #000000; opacity: 0.2"
+                animation="property: material.opacity; to: 0.4; dur: 2000; dir: alternate; loop: true">
+              </a-torus>
+              <!-- Main ring -->
+              <a-torus radius="7" radius-tubular="1" segments-tubular="100"
+              material="shader: flat; color: #ffffff; opacity: 0.2"
+              animation="property: material.opacity; to: 0.4; dur: 2000; dir: alternate; loop: true">
+
+            </a-entity>
+
     </a-entity>
 
 
-    <!-- Jupiter System -->
-    <a-entity position="-10 3 -30">
-        <!-- Jupiter Planet -->
-        <a-sphere
-            id="jupiter"
-            radius="2.5"
-            material="src: url(model/jupiter.png); 
-                                normalMap: https://upload.wikimedia.org/wikipedia/commons/thumb/
-      
-                                roughness: 0.1; metalness: 0.1"
-                                animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
-                                class="clickable clickable-object juputer"
-                                event-set__enter="scale: 1.1 1.1 1.1"
-                                event-set__leave="scale: 1 1 1"
-                            >
-                            </a-sphere>
-                            </a-entity>
-      
-                               
-                            
+   <!-- Uranus -->
+        <a-entity position="30 3 -70">
+          <!-- Mars Planet -->
+          <a-sphere id="uranus" radius="4" material="src: url(model/uranus.jpg);
+                          normalMap=https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Mercury_in_color_-_Prockter07_centered.jpg/1024px-Mercury_in_color_-_Prockter07_centered.jpg;
+                          roughness: 0.8; metalness: 0.2" animation="property: rotation; to: 0 360 0; loop: true; dur: 45000"
+                          class="clickable clickable-object uranus" event-set__enter="scale: 1.1 1.1 1.1" event-set__leave="scale: 1 1 1">
+          </a-sphere>
+    
+        </a-entity>
+    
+
+
+    <!-- Neptune -->
+    <a-entity position="40 2 -65">
+      <a-sphere id="neptune" radius="4" material="src: url(model/neptune.jpg); 
+                  normalMap=https://upload.wikimedia.org/wikipedia/commons/6/6e/Neptune_Full.jpg;
+                  roughness: 0.8; metalness: 0.2" animation="property: rotation; to: 0 360 0; loop: true; dur: 50000"
+        class="clickable clickable-object neptune" event-set__enter="scale: 1.1 1.1 1.1" event-set__leave="scale: 1 1 1">
+      </a-sphere>
+    </a-entity>
+
+
+
+    <!-- Black Hole System -->
+
+
+
     <!-- Camera with improved controls -->
-      <a-entity position="0 2 5">
-        <a-camera look-controls wasd-controls="acceleration: 100">
-          <a-cursor
-            color="#ffd700"
-            scale="0.8 0.8 0.8"
-            animation__click="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 150; startEvents: click"
-            animation__fusing="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 1500; startEvents: fusing"
-            raycaster="objects: .clickable"
-          >
-          </a-cursor>
-        </a-camera>
-      </a-entity>
-    </a-scene>
+    <a-entity position="0 2 5">
+      <a-camera look-controls wasd-controls="acceleration: 100">
+        <a-cursor color="#ffd700" scale="0.8 0.8 0.8"
+          animation__click="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 150; startEvents: click"
+          animation__fusing="property: scale; from: 0.8 0.8 0.8; to: 0.1 0.1 0.1; dur: 1500; startEvents: fusing"
+          raycaster="objects: .clickable">
+        </a-cursor>
+      </a-camera>
+    </a-entity>
+  </a-scene>
 
 
-    <script src="./index.js"></script>
+  <script src="./index.js"></script>
 
-  </body>
+</body>
+
 </html>

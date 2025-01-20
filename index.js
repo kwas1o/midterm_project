@@ -1,18 +1,18 @@
 // Enhanced stars generation
 const scene = document.querySelector("a-scene");
-for (let i = 0; i < 2000; i++) {
+for (let i = 0; i < 5000; i++) {
   const star = document.createElement("a-sphere");
   const size = Math.random() * 0.05 + 0.02;
   star.setAttribute("radius", size);
   star.setAttribute("position", {
-    x: (Math.random() - 0.5) * 200,
-    y: (Math.random() - 0.5) * 200,
-    z: (Math.random() - 0.5) * 200,
+    x: (Math.random() - 0.5) * 500,
+    y: (Math.random() - 0.5) * 500,
+    z: (Math.random() - 0.5) * 500,
   });
   star.setAttribute("material", {
     shader: "standard",
-    emissive: `rgb(255, ${200 + Math.random() * 55}, ${
-      200 + Math.random() * 55
+    emissive: `rgb(255, ${500 + Math.random() * 55}, ${
+      500 + Math.random() * 55
     })`,
     emissiveIntensity: 1,
   });
